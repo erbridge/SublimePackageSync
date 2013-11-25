@@ -1,0 +1,27 @@
+{
+    // Git repositories to sync.
+    "sync_repos": {
+        "SublimePackageSync": {
+            "remotes": {
+                "origin": "git@github.com:erbridge/SublimePackageSync.git"
+            },
+            "object_to_checkout": "origin/master"  // This can be any git object usable as an argument to git checkout.
+        },
+        // FIXME: Remove this test.
+        "test": {
+            "remotes": {
+                "origin": "git@github.com:erbridge/SublimePackageSync.git",
+                "test": "git@github.com:erbridge/SublimePackageSync.git"
+            },
+            "object_to_checkout": "origin/master"
+        }
+    },
+
+    // Clone or update the packages not in "auto_sync_ignore" on startup.
+    "auto_sync": true,
+
+    // A list of repositories to ignore when automatically syncing.
+    "auto_sync_ignore": [
+        "SublimePackageSync"  // FIXME: Comment this out.
+    ]
+}
