@@ -16,7 +16,7 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
         installed_packages = os.listdir(sublime.packages_path())
         for package_name in packages_to_sync:
             if autorun and package_name in self.settings.get("auto_sync_ignore"):
-                return
+                continue
             package = packages_to_sync.get(package_name)
             remotes = package.get("remotes")
             package_path = os.path.join(sublime.packages_path(), package_name)
