@@ -124,5 +124,6 @@ class SublimePackageSyncGitError(Exception):
     pass
 
 
-if sublime.load_settings("SublimePackageSync.sublime-settings").get("auto_sync"):
-    SublimePackageSyncAllCommand().run(autorun=True)
+def plugin_loaded():
+    if sublime.load_settings("SublimePackageSync.sublime-settings").get("auto_sync"):
+        SublimePackageSyncAllCommand().run(autorun=True)
