@@ -5,19 +5,18 @@ import sublime
 import sublime_plugin
 
 
-class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
+class SublimePackageSyncAllCommand(sublime_plugin.ApplicationCommand):
 
     def __init__(self):
-        self.settings = sublime.load_settings(
-            "SublimePackageSync.sublime-settings")
+        self.settings = None
 
     def run(self, autorun=False):
         print("[SublimePackageSync] Syncing all packages.")
-        packages_to_sync = self.settings.get("sync_repos")
+        packages_to_sync = self.get_setting("sync_repos")
         installed_packages = os.listdir(sublime.packages_path())
         for package_name in packages_to_sync:
             try:
-                if autorun and package_name in self.settings.get("auto_sync_ignore"):
+                if autorun and package_name in self.get_setting("auto_sync_ignore"):
                     continue
                 package = packages_to_sync.get(package_name)
                 remotes = package.get("remotes")
@@ -47,6 +46,11 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
     def description(self):
         # TODO: Add a description here.
         return None
+
+    def get_setting(self, key):
+        if self.settings is None:
+            self.settings = sublime.load_settings("SublimePackageSync.sublime-settings")
+        return self.settings.get(key)
 
     def is_git_repo(self, cwd):
         process = subprocess.Popen(["git", "rev-parse", "--git-dir"],
@@ -114,4 +118,4 @@ class SublimePackageSyncGitError(Exception):
 
 
 if sublime.load_settings("SublimePackageSync.sublime-settings").get("auto_sync"):
-    SublimePackageSyncAll().run(autorun=True)
+    SublimePackageSyncAllCommand().run(autorun=True)
