@@ -28,6 +28,10 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
                 if self.is_git_repo(package_path):
                     print("[SublimePackageSync] Updating " + package_name + ".")
                     existing_remotes = self.git_remote_show(package_path)
+                    if not self.git_remotes_check(remotes, existing_remotes, package_path):
+                        print("[SublimePackageSync] ERROR - Mismatched remote." +
+                              " Check your remote settings.")
+                        return
                     self.git_remotes_add(remotes, existing_remotes, package_path)
                     self.git_checkout(
                         package.get("object_to_checkout"), package_path)
@@ -59,15 +63,23 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
             raise SublimePackageSyncGitError
         return remotes
 
-    def git_remote_show(self, cwd):
+    def git_remote_show(self, cwd, *args):
         process = subprocess.Popen(
-            ["git", "remote", "show"], cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            ["git", "remote", "show"] + [x for x in args], cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         if process.returncode != 0:
             print(stdoutdata.decode("utf-8"), end="")
             print(stderrdata.decode("utf-8"), end="")
             raise SublimePackageSyncGitError
         return stdoutdata.decode("utf-8").strip().split("\n")
+
+    def git_remotes_check(self, remotes, existing_remotes, cwd):
+        for remote_name in remotes:
+            if remote_name in existing_remotes:
+                remote_info = self.git_remote_show(cwd, "-n", remote_name)
+                for line in remote_info:
+                    if "Fetch URL:" in line:
+                        return line.split(" ")[-1].strip(".git") == remotes.get(remote_name).strip(".git")
 
     def git_remotes_add(self, remotes, existing_remotes, cwd):
         for remote_name in remotes:
