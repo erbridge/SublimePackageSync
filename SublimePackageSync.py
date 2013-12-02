@@ -83,6 +83,7 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
                 for line in remote_info:
                     if "Fetch URL:" in line:
                         return line.split(" ")[-1].strip(".git") == remotes.get(remote_name).strip(".git")
+        return True
 
     def git_remotes_add(self, remotes, existing_remotes, cwd):
         for remote_name in remotes:
