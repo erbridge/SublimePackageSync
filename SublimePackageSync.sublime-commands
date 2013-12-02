@@ -1,4 +1,10 @@
-[{
-    "caption": "SublimePackageSync: Sync All",
-    "command": "sublime_package_sync_all"
-}]
+[
+    {
+        "caption": "SublimePackageSync: Sync All",
+        "command": "sublime_package_sync_all"
+    },
+    {
+        "caption": "SublimePackageSync: Sync Specific",
+        "command": "sublime_package_sync_specific"
+    },
+]
