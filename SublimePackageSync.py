@@ -11,6 +11,13 @@ class SublimePackageSyncAllCommand(sublime_plugin.ApplicationCommand):
         self.settings = None
 
     def run(self, autorun=False):
+        sublime.set_timeout_async(lambda: self.sync(autorun), 0)
+
+    def description(self):
+        # TODO: Add a description here.
+        return None
+
+    def sync(self, autorun):
         print("[SublimePackageSync] Syncing all packages.")
         packages_to_sync = self.get_setting("sync_repos")
         installed_packages = os.listdir(sublime.packages_path())
@@ -43,10 +50,6 @@ class SublimePackageSyncAllCommand(sublime_plugin.ApplicationCommand):
                 print(
                     "[SublimePackageSync] ERROR - Git command failed. See output above.")
         print("[SublimePackageSync] Done!")
-
-    def description(self):
-        # TODO: Add a description here.
-        return None
 
     def get_setting(self, key):
         if self.settings is None:
