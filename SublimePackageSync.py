@@ -63,8 +63,7 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
             remote = remotes.pop("origin")
         else:
             remote = remotes.pop(remotes.keys()[0])
-        if not self.report_subprocess(subprocess.Popen(["git", "clone", remote, path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)):
-            raise SublimePackageSyncGitError
+        self.run_git_command(["clone", remote, path])
         return remotes
 
     def git_remote_show(self, cwd, *args):
@@ -88,15 +87,16 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
     def git_remotes_add(self, remotes, existing_remotes, cwd):
         for remote_name in remotes:
             if remote_name not in existing_remotes:
-                if not self.report_subprocess(subprocess.Popen(["git", "remote", "add", remote_name, remotes.get(remote_name)], cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)):
-                    raise SublimePackageSyncGitError
+                self.run_git_command(["remote", "add", remote_name, remotes.get(remote_name)], cwd=cwd)
 
     def git_checkout(self, object_to_checkout, cwd):
-        if not self.report_subprocess(subprocess.Popen(["git", "checkout", object_to_checkout], cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)):
-            raise SublimePackageSyncGitError
+        self.run_git_command(["checkout", object_to_checkout], cwd=cwd)
 
     def git_submodule_update(self, cwd):
-        if not self.report_subprocess(subprocess.Popen(["git", "submodule", "update", "--init", "--recursive"], cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)):
+        self.run_git_command(["submodule", "update", "--init", "--recursive"], cwd=cwd)
+
+    def run_git_command(self, args, cwd=None):
+        if not self.report_subprocess(subprocess.Popen(["git"] + args, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)):
             raise SublimePackageSyncGitError
 
     def report_subprocess(self, process):
