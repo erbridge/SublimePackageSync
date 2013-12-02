@@ -16,21 +16,24 @@ class SublimePackageSyncAll(sublime_plugin.ApplicationCommand):
         packages_to_sync = self.settings.get("sync_repos")
         installed_packages = os.listdir(sublime.packages_path())
         for package_name in packages_to_sync:
-            if autorun and package_name in self.settings.get("auto_sync_ignore"):
-                continue
-            package = packages_to_sync.get(package_name)
-            remotes = package.get("remotes")
-            package_path = os.path.join(sublime.packages_path(), package_name)
-            if package_name not in installed_packages:
-                print("[SublimePackageSync] Cloning " + package_name + ".")
-                remotes = self.git_clone(remotes, package_path)
-            if self.is_git_repo(package_path):
-                print("[SublimePackageSync] Updating " + package_name + ".")
-                existing_remotes = self.git_remote_show(package_path)
-                self.git_remotes_add(remotes, existing_remotes, package_path)
-                self.git_checkout(
-                    package.get("object_to_checkout"), package_path)
-                self.git_submodule_update(package_path)
+            try:
+                if autorun and package_name in self.settings.get("auto_sync_ignore"):
+                    continue
+                package = packages_to_sync.get(package_name)
+                remotes = package.get("remotes")
+                package_path = os.path.join(sublime.packages_path(), package_name)
+                if package_name not in installed_packages:
+                    print("[SublimePackageSync] Cloning " + package_name + ".")
+                    remotes = self.git_clone(remotes, package_path)
+                if self.is_git_repo(package_path):
+                    print("[SublimePackageSync] Updating " + package_name + ".")
+                    existing_remotes = self.git_remote_show(package_path)
+                    self.git_remotes_add(remotes, existing_remotes, package_path)
+                    self.git_checkout(
+                        package.get("object_to_checkout"), package_path)
+                    self.git_submodule_update(package_path)
+            except SublimePackageSyncGitError:
+                print("[SublimePackageSync] ERROR - Git command failed. See output above.")
         print("[SublimePackageSync] Done!")
 
     def description(self):
