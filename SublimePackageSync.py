@@ -35,6 +35,7 @@ class SublimePackageSyncAllCommand(sublime_plugin.ApplicationCommand):
                         return
                     self.git_remotes_add(
                         remotes, existing_remotes, package_path)
+                    self.git_fetch(package_path)
                     self.git_checkout(
                         package.get("object_to_checkout"), package_path)
                     self.git_submodule_update(package_path)
@@ -49,7 +50,8 @@ class SublimePackageSyncAllCommand(sublime_plugin.ApplicationCommand):
 
     def get_setting(self, key):
         if self.settings is None:
-            self.settings = sublime.load_settings("SublimePackageSync.sublime-settings")
+            self.settings = sublime.load_settings(
+                "SublimePackageSync.sublime-settings")
         return self.settings.get(key)
 
     def is_git_repo(self, cwd):
@@ -92,13 +94,18 @@ class SublimePackageSyncAllCommand(sublime_plugin.ApplicationCommand):
     def git_remotes_add(self, remotes, existing_remotes, cwd):
         for remote_name in remotes:
             if remote_name not in existing_remotes:
-                self.run_git_command(["remote", "add", remote_name, remotes.get(remote_name)], cwd=cwd)
+                self.run_git_command(
+                    ["remote", "add", remote_name, remotes.get(remote_name)], cwd=cwd)
+
+    def git_fetch(self, cwd):
+        self.run_git_command(["fetch"], cwd=cwd)
 
     def git_checkout(self, object_to_checkout, cwd):
         self.run_git_command(["checkout", object_to_checkout], cwd=cwd)
 
     def git_submodule_update(self, cwd):
-        self.run_git_command(["submodule", "update", "--init", "--recursive"], cwd=cwd)
+        self.run_git_command(
+            ["submodule", "update", "--init", "--recursive"], cwd=cwd)
 
     def run_git_command(self, args, cwd=None):
         if not self.report_subprocess(subprocess.Popen(["git"] + args, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)):
