@@ -139,7 +139,7 @@ class SublimePackageSyncAllCommand(SublimePackageSyncCommand):
         # TODO: Add a description here.
         return None
 
-    def sync(self, autorun):
+    def sync(self):
         print("[SublimePackageSync] Syncing all packages.")
         packages_to_sync = self.get_setting("sync_repos")
         installed_packages = os.listdir(sublime.packages_path())
