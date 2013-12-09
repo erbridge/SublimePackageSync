@@ -132,8 +132,8 @@ class SublimePackageSyncCommand(sublime_plugin.ApplicationCommand):
 
 class SublimePackageSyncAllCommand(SublimePackageSyncCommand):
 
-    def run(self, autorun=False):
-        sublime.set_timeout_async(lambda: self.sync(autorun), 0)
+    def run(self):
+        sublime.set_timeout_async(self.sync, 0)
 
     def description(self):
         # TODO: Add a description here.
@@ -144,7 +144,7 @@ class SublimePackageSyncAllCommand(SublimePackageSyncCommand):
         packages_to_sync = self.get_setting("sync_repos")
         installed_packages = os.listdir(sublime.packages_path())
         for package_name in packages_to_sync:
-            if autorun and package_name in self.get_setting("auto_sync_ignore"):
+            if package_name in self.get_setting("auto_sync_ignore"):
                 continue
             self.sync_package(
                 package_name, packages_to_sync.get(package_name),
@@ -177,4 +177,4 @@ class SublimePackageSyncSpecificCommand(SublimePackageSyncCommand):
 
 def plugin_loaded():
     if sublime.load_settings("SublimePackageSync.sublime-settings").get("auto_sync"):
-        SublimePackageSyncAllCommand().run(autorun=True)
+        SublimePackageSyncAllCommand().run()
