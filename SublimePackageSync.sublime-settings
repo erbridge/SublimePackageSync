@@ -5,7 +5,8 @@
             "remotes": {
                 "origin": "git@github.com:erbridge/SublimePackageSync.git"
             },
-            "object_to_checkout": "origin/master"  // This can be any git object usable as an argument to git checkout.
+            // This can be any git object usable as an argument to git checkout.
+            "object_to_checkout": "origin/master"
         }
     },
 
@@ -13,7 +14,8 @@
     "auto_sync": true,
 
     // A list of repositories to ignore when automatically syncing.
+    // This list is ignored by the "SublimePackageSync: Sync Specific" command.
     "auto_sync_ignore": [
-        // "SublimePackageSync"
+        "SublimePackageSync"
     ]
 }
