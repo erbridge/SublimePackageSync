@@ -5,9 +5,9 @@ Checks any git repository out to the sublime packages folder from any git object
 
 ## Why?
 
-This package came about because I wanted the benefits of [Package Control][1], particularily the ease which it provides in keeping packages synced across different machines, but I didn't want to be at the mercy of the original developers maintaining their code and/or accepting pull requests.
+This package came about because I wanted the benefits of [Package Control][1], particularily the ease which it provides in keeping packages synced across different machines, but I didn't want to be at the mercy of the original developers of a package maintaining their code and/or accepting pull requests.
 
-With [SublimePackageSync][2], you can keep a package synced to a particular commit, branch, tag, or any other git object of any repository (the original or a fork), and keep that configuration in sync between multiple machines.
+With [SublimePackageSync][2], you can keep a package synced to a particular commit, branch, tag, or any other git object of any repository (the original or a fork), and keep that configuration in sync between multiple machines by sharing/copying `Packages/User/SublimePackageSync.sublime-settings`.
 
 
 ## How?
